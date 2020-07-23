@@ -16,8 +16,6 @@ ENV RUNNER_LABELS ""
 ENV MAVEN_HOME /usr/share/maven
 ENV MAVEN_CONFIG "/home/github/.m2"
 
-WORKDIR "/home/github"
-
 RUN apt-get update \
     && apt-get install -y \
         curl \
@@ -29,7 +27,7 @@ RUN apt-get update \
         ca-certificates \
         gnupg-agent \
         software-properties-common \
-    && useradd -u 4242 github \
+    && useradd -u 4242 -m github \
     && mkdir -p /usr/share/maven /usr/share/maven/ref \
     && curl -fsSL -o /tmp/apache-maven.tar.gz ${MVN_BASE_URL}/apache-maven-${MAVEN_VERSION}-bin.tar.gz \
     && echo "${MVN_SHA}  /tmp/apache-maven.tar.gz" | sha512sum -c - \
@@ -45,10 +43,15 @@ RUN apt-get update \
     && apt-get install -y docker-ce-cli \
     && groupadd docker \
     && usermod -aG docker github \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* \
     && curl -Ls https://github.com/actions/runner/releases/download/v${GITHUB_RUNNER_VERSION}/actions-runner-linux-x64-${GITHUB_RUNNER_VERSION}.tar.gz | tar xz \
-    && ./bin/installdependencies.sh
+    && ./bin/installdependencies.sh \
+    && apt-get remove -y curl jq unzip netcat apt-transport-https gnupg-agent software-properties-common \
+    && apt-get autoremove -y \
+    && apt-get autoclean -y \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /home/github
 
 COPY --chown=github:github entrypoint.sh ./entrypoint.sh
 RUN chmod u+x ./entrypoint.sh
