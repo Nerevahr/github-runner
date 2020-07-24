@@ -43,6 +43,7 @@ RUN apt-get update \
     && apt-get install -y docker-ce-cli \
     && groupadd docker \
     && usermod -aG docker github \
+    && cd /home/github \
     && curl -Ls https://github.com/actions/runner/releases/download/v${GITHUB_RUNNER_VERSION}/actions-runner-linux-x64-${GITHUB_RUNNER_VERSION}.tar.gz | tar xz \
     && ./bin/installdependencies.sh \
     && apt-get remove -y curl jq unzip netcat apt-transport-https gnupg-agent software-properties-common \
