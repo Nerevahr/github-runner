@@ -1,6 +1,6 @@
 FROM debian:buster-slim
 
-ARG GITHUB_RUNNER_VERSION=2.267.1
+ARG GITHUB_RUNNER_VERSION=2.272.0
 ARG MAVEN_VERSION=3.6.3
 
 ARG MVN_SHA=c35a1803a6e70a126e80b2b3ae33eed961f83ed74d18fcd16909b2d44d7dada3203f1ffe726c17ef8dcca2dcaa9fca676987befeadc9b9f759967a8cb77181c0
@@ -37,7 +37,7 @@ RUN  mkdir -p /usr/share/maven /usr/share/maven/ref \
     && rm -f /tmp/apache-maven.tar.gz \
     && ln -s /usr/share/maven/bin/mvn /usr/bin/mvn
 
-# Docker / Kubectl install
+# Docker / Kubectl / Node / Yarn install
 RUN curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add - \
     && curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - \
     && add-apt-repository \
@@ -45,8 +45,10 @@ RUN curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add - \
             $(lsb_release -cs) \
             stable" \
     && echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | tee -a /etc/apt/sources.list.d/kubernetes.list \
-    && apt-get update \
-    && apt-get install -y docker-ce-cli kubectl \
+    && curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
+    && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list \
+    && curl -sL https://deb.nodesource.com/setup_14.x | bash - \
+    && apt-get install -y docker-ce-cli kubectl nodejs yarn \
     && groupadd -g ${DOCKER_GROUP_GUID} docker \
     && usermod -aG docker github \
     && newgrp docker \
@@ -71,5 +73,7 @@ COPY --chown=github:github entrypoint.sh ./entrypoint.sh
 RUN chmod u+x ./entrypoint.sh
 
 USER github
+
+RUN yarn global add @angular/cli
 
 ENTRYPOINT ["/home/github/entrypoint.sh"]
