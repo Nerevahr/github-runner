@@ -2,12 +2,12 @@
 apiVersion: v1
 kind: Secret
 metadata:
-    name: github-action
-    namespace: github
+  name: github-action
+  namespace: github
 type: Opaque
 data:
-    # Base64 encoded of the token
-    TOKEN: <a base64 encoded token>
+  # Base64 encoded of the token
+  ACCESS_TOKEN: <a base64 encoded access token>
 
 ---
 
@@ -29,18 +29,22 @@ spec:
         app: github-runner
     spec:
       containers:
-      - name: github-runner
-        image: michaelcoll/github-runner:latest
-        envFrom:
-          - secretRef:
-              name: github-action
-        env:
-        - name: ORG_NAME
-          value: your-organization
-        volumeMounts:
-          - mountPath: /var/run
-            name: docker-sock
+        - name: github-runner
+          image: michaelcoll/github-runner:latest
+          envFrom:
+            - secretRef:
+                name: github-action
+          env:
+            - name: ORG_NAME
+              value: your-organization
+            - name: ORG_RUNNER
+              value: "true"
+            - name: LABELS
+              value: k8s,docker
+          volumeMounts:
+            - mountPath: /var/run
+              name: docker-sock
       volumes:
         - name: docker-sock
           hostPath:
-              path: /var/run
+            path: /var/run
