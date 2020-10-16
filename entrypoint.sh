@@ -1,22 +1,42 @@
-#!/bin/sh
-url="https://github.com/${ORG_NAME}"
+#!/usr/bin/dumb-init /bin/bash
 
+export RUNNER_ALLOW_RUNASROOT=1
+export PATH=$PATH:/actions-runner
+
+deregister_runner() {
+  echo "Caught SIGTERM. Deregistering runner"
+  _TOKEN=$(bash /token.sh)
+  RUNNER_TOKEN=$(echo "${_TOKEN}" | jq -r .token)
+  ./config.sh remove --token "${RUNNER_TOKEN}"
+  exit
+}
+
+_RUNNER_NAME=${RUNNER_NAME:-${RUNNER_NAME_PREFIX:-github-runner}-$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 13 ; echo '')}
+_RUNNER_WORKDIR=${RUNNER_WORKDIR:-/_work}
+_LABELS=${LABELS:-default}
+_SHORT_URL=${REPO_URL}
+
+if [[ ${ORG_RUNNER} == "true" ]]; then
+  _SHORT_URL="https://github.com/${ORG_NAME}"
+fi
+
+if [[ -n "${ACCESS_TOKEN}" ]]; then
+  _TOKEN=$(bash /token.sh)
+  RUNNER_TOKEN=$(echo "${_TOKEN}" | jq -r .token)
+  _SHORT_URL=$(echo "${_TOKEN}" | jq -r .short_url)
+fi
+
+echo "Configuring"
 ./config.sh \
-    --name $(hostname) \
-    --token ${TOKEN} \
-    --url ${url} \
-    --work ${RUNNER_WORKDIR} \
-    --labels ${RUNNER_LABELS} \
+    --name "${_RUNNER_NAME}" \
+    --token "${RUNNER_TOKEN}" \
+    --url "${_SHORT_URL}" \
+    --work "${_RUNNER_WORKDIR}" \
+    --labels "${_LABELS}" \
     --unattended \
     --replace
 
-remove() {
-    ./config.sh remove --unattended --token "${TOKEN}"
-}
+unset RUNNER_TOKEN
+trap deregister_runner SIGINT SIGQUIT SIGTERM
 
-trap 'remove; exit 130' INT
-trap 'remove; exit 143' TERM
-
-./run.sh "$*" &
-
-wait $!
+./bin/runsvc.sh

@@ -1,0 +1,30 @@
+name: Build
+on:
+  push:
+    paths-ignore:
+      - deployment.yml
+      - README.md
+    tags-ignore:
+      - '*'
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Get GitHub organization or user
+        run: echo "ORG=$(dirname ${GITHUB_REPOSITORY})" >> $GITHUB_ENV
+
+      - uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build
+        run: docker build . -t ${ORG}/github-runner:latest
+
+      - name: Push
+        run: docker push ${ORG}/github-runner
