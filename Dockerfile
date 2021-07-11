@@ -1,4 +1,4 @@
-FROM debian:buster-slim
+FROM debian:stable-slim
 
 ARG GITHUB_RUNNER_VERSION=2.278.0
 ARG MAVEN_VERSION=3.8.1
