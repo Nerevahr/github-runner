@@ -21,7 +21,9 @@ if [[ ${ORG_RUNNER} == "true" ]]; then
 fi
 
 if [[ -n "${ACCESS_TOKEN}" ]]; then
+  echo "Obtaining runner token from access token"
   _TOKEN=$(bash /token.sh)
+  echo "Token info : ${_TOKEN}"
   RUNNER_TOKEN=$(echo "${_TOKEN}" | jq -r .token)
   _SHORT_URL=$(echo "${_TOKEN}" | jq -r .short_url)
 fi
