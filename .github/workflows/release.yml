@@ -19,7 +19,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build
-        run: docker build . -t michaelcoll/github-runner:${TAG} -t michaelcoll/github-runner:latest
+        run: docker build . -t michaelcoll/github-runner:${TAG}
 
       - name: Push
-        run: docker push michaelcoll/github-runner
+        run: docker push michaelcoll/github-runner:${TAG}
