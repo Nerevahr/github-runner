@@ -24,7 +24,7 @@ else
   _SHORT_URL=$REPO_URL
 fi
 
-RUNNER_TOKEN="$(curl -XPOST -fsSL \
+RUNNER_TOKEN="$(curl -XPOST -sS \
   -H "${AUTH_HEADER}" \
   -H "${API_HEADER}" \
   "${_FULL_URL}" \
