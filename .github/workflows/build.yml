@@ -5,7 +5,11 @@ on:
       - deployment.yml
       - README.md
     branches:
-      - '!master'
+      - feature/**
+      - feat/**
+      - hotfix/**
+      - fix/**
+      - dependabot/**
 
 jobs:
   deploy:
