@@ -1,9 +1,9 @@
-FROM ubuntu:22.04
+FROM ubuntu:21.04
 
-ARG GITHUB_RUNNER_VERSION=2.278.0
-ARG MAVEN_VERSION=3.8.1
+ARG GITHUB_RUNNER_VERSION=2.289.1
+ARG MAVEN_VERSION=3.8.5
 
-ARG MVN_SHA=0ec48eb515d93f8515d4abe465570dfded6fa13a3ceb9aab8031428442d9912ec20f066b2afbf56964ffe1ceb56f80321b50db73cf77a0e2445ad0211fb8e38d
+ARG MVN_SHA=89ab8ece99292476447ef6a6800d9842bbb60787b9b8a45c103aa61d2f205a971d8c3ddfb8b03e514455b4173602bd015e82958c0b3ddc1728a57126f773c743
 ARG MVN_BASE_URL=https://apache.osuosl.org/maven/maven-3/${MAVEN_VERSION}/binaries
 
 ENV RUNNER_NAME runner
@@ -42,7 +42,7 @@ RUN apt-get update \
     && echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | tee -a /etc/apt/sources.list.d/kubernetes.list \
     && curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
     && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list \
-    && curl -sL https://deb.nodesource.com/setup_14.x | bash - \
+    && curl -sL https://deb.nodesource.com/setup_16.x | bash - \
     && apt-get update && apt-get install -y docker-ce-cli kubectl nodejs yarn \
     && apt-get remove -y unzip netcat apt-transport-https gnupg software-properties-common \
     && apt-get autoremove -y \
