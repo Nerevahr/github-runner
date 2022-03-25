@@ -42,7 +42,7 @@ RUN apt-get update \
     && echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | tee -a /etc/apt/sources.list.d/kubernetes.list \
     && curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
     && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list \
-    && curl -sL https://deb.nodesource.com/setup_14.x | bash - \
+    && curl -sL https://deb.nodesource.com/setup_16.x | bash - \
     && apt-get update && apt-get install -y docker-ce-cli kubectl nodejs yarn \
     && apt-get remove -y unzip netcat apt-transport-https gnupg software-properties-common \
     && apt-get autoremove -y \
