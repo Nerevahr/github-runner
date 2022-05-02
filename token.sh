@@ -30,4 +30,10 @@ RUNNER_TOKEN="$(curl -XPOST -sS \
   "${_FULL_URL}" \
 | jq -r '.token')"
 
-echo "{\"token\": \"${RUNNER_TOKEN}\", \"short_url\": \"${_SHORT_URL}\", \"full_url\": \"${_FULL_URL}\"}"
+MESSAGE="$(curl -XPOST -sS \
+  -H "${AUTH_HEADER}" \
+  -H "${API_HEADER}" \
+  "${_FULL_URL}" \
+| jq -r '.message')"
+
+echo "{\"token\": \"${RUNNER_TOKEN}\", \"short_url\": \"${_SHORT_URL}\", \"error_message\": \"${MESSAGE}\"}"
