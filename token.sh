@@ -2,6 +2,10 @@
 
 _ORG_RUNNER=${ORG_RUNNER:-false}
 
+if [ -z "${ACCESS_TOKEN}" ]; then
+  echo "\$ACCESS_TOKEN is empty"
+fi
+
 URI=https://api.github.com
 API_VERSION=v3
 API_HEADER="Accept: application/vnd.github.${API_VERSION}+json"
