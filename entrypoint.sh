@@ -25,6 +25,7 @@ if [[ -n "${ACCESS_TOKEN}" ]]; then
   _TOKEN=$(bash /token.sh)
   RUNNER_TOKEN=$(echo "${_TOKEN}" | jq -r .token)
   _SHORT_URL=$(echo "${_TOKEN}" | jq -r .short_url)
+  echo "${_TOKEN}"
 fi
 
 echo "Configuring"
