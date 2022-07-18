@@ -1,6 +1,6 @@
-FROM ubuntu:21.04
+FROM ubuntu:22.04
 
-ARG GITHUB_RUNNER_VERSION=2.290.1
+ARG GITHUB_RUNNER_VERSION=2.294.0
 ARG MAVEN_VERSION=3.8.6
 
 ARG MVN_SHA=f790857f3b1f90ae8d16281f902c689e4f136ebe584aba45e4b1fa66c80cba826d3e0e52fdd04ed44b4c66f6d3fe3584a057c26dfcac544a60b301e6d0f91c26
@@ -20,7 +20,6 @@ RUN apt-get update \
         git \
         jq \
         unzip \
-        netcat \
         ca-certificates \
         gnupg \
         lsb-release \
@@ -44,7 +43,7 @@ RUN apt-get update \
     && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list \
     && curl -sL https://deb.nodesource.com/setup_16.x | bash - \
     && apt-get update && apt-get install -y docker-ce-cli kubectl nodejs yarn \
-    && apt-get remove -y unzip netcat apt-transport-https gnupg software-properties-common \
+    && apt-get remove -y unzip apt-transport-https gnupg software-properties-common \
     && apt-get autoremove -y \
     && apt-get autoclean -y \
     && apt-get clean \
@@ -54,7 +53,7 @@ WORKDIR /actions-runner
 
 # Github action runner install
 RUN curl -Ls https://github.com/actions/runner/releases/download/v${GITHUB_RUNNER_VERSION}/actions-runner-linux-x64-${GITHUB_RUNNER_VERSION}.tar.gz | tar xz \
-    && apt-get update && apt-get install -y libicu67 \
+    && apt-get update && apt-get install -y libicu70 liblttng-ust1 \
     && ./bin/installdependencies.sh \
     && apt-get autoremove -y \
     && apt-get autoclean -y \
